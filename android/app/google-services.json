@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "196604458762",
+    "project_id": "thirsttea-d3589",
+    "storage_bucket": "thirsttea-d3589.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196604458762:android:d6f67ffe8fa257a26fecf3",
+        "android_client_info": {
+          "package_name": "com.example.thirst_tea"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtfVyHMsohVDgUVWeRi-Ban3H-xnrvAXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196604458762:android:ea8ffeff0f0b02eb6fecf3",
+        "android_client_info": {
+          "package_name": "com.example.thirsttea"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtfVyHMsohVDgUVWeRi-Ban3H-xnrvAXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
