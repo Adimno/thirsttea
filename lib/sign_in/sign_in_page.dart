@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import 'package:thirst_tea/sign_up/sign_up_page.dart';
+// import 'package:thirst_tea/home/home_page.dart';
+import 'package:thirst_tea/bottom_tabs/bottom_tabs_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io';
 
 class SignInPage extends StatefulWidget {
+
   @override
   _SignInPageState createState() => _SignInPageState();
 }
@@ -18,36 +24,90 @@ class _SignInPageState extends State<SignInPage> {
   Future<void> _signIn() async {
     if (_formKey.currentState!.validate()) {
       try {
-        // Firebase Auth sign-in logic
-        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
+        // Send login data to your PHP server
+        var response = await http.post(
+          Uri.parse('http://10.0.2.2/thirsteaFINALV2/login/validation.php'), // Your PHP server URL
+          body: {
+            'email': _emailController.text.trim(),
+            'password': _passwordController.text.trim(),
+          },
         );
 
-        // User sign-in successful
-        print("User signed in: ${userCredential.user?.email}");
+        // Check the response status code and handle accordingly
+        if (response.statusCode == 200) {
+          // Parse the response from the PHP server
+          var responseData = json.decode(response.body);
 
-        // Fetch user data from Firestore
-        DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).get();
-        String firstName = userDoc['firstName'] ?? '';
-        String lastName = userDoc['lastName'] ?? '';
-
-        // Navigate to HomePage after successful sign-in
-        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage())); // Uncomment and define HomePage
-
-      } on FirebaseAuthException catch (e) {
-        String errorMessage = "Wrong password or email";
-        if (e.code == 'user-not-found') {
-          errorMessage = 'No user found for that email.';
-        } else if (e.code == 'wrong-password') {
-          errorMessage = 'Wrong password or email provided.';
+          // Check if login was successful
+          if (responseData['status'] == 'success') {
+            // If the response is successful, navigate to the HomePage
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(), // Navigate to HomePage
+              ),
+            );
+          } else {
+            // Handle invalid credentials from PHP server
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Invalid email or password')),
+            );
+          }
+        } else {
+          // Handle different HTTP status codes
+          switch (response.statusCode) {
+            case 400:
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Bad request. Please check your input.')),
+              );
+              break;
+            case 401:
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Unauthorized. Please check your credentials.')),
+              );
+              break;
+            case 403:
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Forbidden. You do not have permission to access this resource.')),
+              );
+              break;
+            case 404:
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Server not found. Please check the URL.')),
+              );
+              break;
+            case 500:
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Server error. Please try again later.')),
+              );
+              break;
+            default:
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Login failed. Please try again.')),
+              );
+          }
         }
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
       } catch (e) {
-        // Handle any other errors
+        // Handle errors for network or other exceptions
+        if (e is SocketException) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('No internet connection. Please check your connection.')),
+          );
+        } else if (e is FormatException) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Invalid response format. Please try again later.')),
+          );
+        } else {
+          print("Error: $e");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("An unexpected error occurred. Please try again.")),
+          );
+        }
       }
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {

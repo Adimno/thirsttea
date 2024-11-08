@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:thirst_tea/sign_in/sign_in_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -11,7 +13,6 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final _fullNameController = TextEditingController();
   final _addressController = TextEditingController();
-  final _contactNumberController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -23,42 +24,55 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
       try {
-        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
+        // Send data to the PHP server
+        var response = await http.post(
+          Uri.parse('http://10.0.2.2/thirsteaFINALV2/login/registration_cp.php'),
+          // Your PHP server URL
+          body: {
+            'name': _fullNameController.text.trim(),
+            'address': _addressController.text.trim(),
+            'email': _emailController.text.trim(),
+            'password': _passwordController.text.trim(),
+          },
         );
 
-        String fName = _fullNameController.text.trim();
-        String formattedfName = fName.isNotEmpty
-            ? fName[0].toUpperCase() + fName.substring(1).toLowerCase()
-            : '';
+        if (response.statusCode == 200) {
+          // Parse the JSON response
+          var responseData = json.decode(response.body);
 
-        await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
-          'fullName': formattedfName,
-          'email': _emailController.text.trim(),
-          'password': _passwordController.text.trim(),
-          'address': _addressController.text.trim(),
-          'contactNumber': int.parse(_contactNumberController.text.trim()),
-          'role': 'Customer',
-        });
+          if (responseData['status'] == 'success') {
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('You registered successfully!')),
+            );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('You registered successfully!')),
-        );
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SignInPage()),
-        );
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'email-already-in-use') {
+            // Navigate to the sign-in page
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => SignInPage()),
+            );
+          } else {
+            // Handle error from server
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(responseData['message'])),
+            );
+          }
+        } else {
+          // Handle other HTTP errors
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Email already exists. Please use a different email.')),
+            SnackBar(content: Text('Sign-up failed. Please try again.')),
           );
         }
+      } catch (e) {
+        // Handle network errors
+        print("Error: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Something went wrong.')),
+        );
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -121,13 +135,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       controller: _addressController,
                       labelText: "Address",
                       icon: Icons.location_city,
-                    ),
-                    SizedBox(height: 16.0),
-                    _buildTextField(
-                      controller: _contactNumberController,
-                      labelText: "Contact Number",
-                      icon: Icons.phone,
-                      keyboardType: TextInputType.number,
                     ),
                     SizedBox(height: 16.0),
                     _buildTextField(
