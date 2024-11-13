@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:thirst_tea/product_page/product_page.dart';
 
 class HomePage1 extends StatefulWidget {
   @override
@@ -8,31 +10,43 @@ class HomePage1 extends StatefulWidget {
 
 class _HomePageState extends State<HomePage1> {
   String selectedCategory = 'All';
+  List products = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProducts();
+  }
+
+  Future<void> fetchProducts() async {
+    final String url =
+        'http://10.0.2.2/thirsteaFINALV2/login/adminmain/products_cp_connection.php'; // Replace with your server address
+
+    try {
+      final response = await http.get(Uri.parse(url + '?category=$selectedCategory')); // Pass category as a query parameter
+      if (response.statusCode == 200) {
+        final List<dynamic> productsList = json.decode(response.body); // Decode the JSON response
+
+        setState(() {
+          products = productsList.map((product) {
+            // Convert fields to appropriate types
+            product['price'] = double.tryParse(product['price'].toString()) ?? 0.0; // Ensure 'price' is a double
+            return product;
+          }).toList(); // Ensure the products list is updated with the correct types
+        });
+      } else {
+        throw Exception('Failed to load products');
+      }
+    } catch (e) {
+      print('Error fetching products: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Search',
-              prefixIcon: Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: Colors.grey[200],
-            ),
-          ),
-        ),
-      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -96,24 +110,42 @@ class _HomePageState extends State<HomePage1> {
                   CategoryChip(
                     label: 'All',
                     isSelected: selectedCategory == 'All',
-                    onSelected: () => setState(() => selectedCategory = 'All'),
+                    onSelected: () {
+                      setState(() {
+                        selectedCategory = 'All';
+                        fetchProducts();
+                      });
+                    },
                   ),
                   CategoryChip(
                     label: 'Milktea',
                     isSelected: selectedCategory == 'Milktea',
-                    onSelected: () =>
-                        setState(() => selectedCategory = 'Milktea'),
+                    onSelected: () {
+                      setState(() {
+                        selectedCategory = 'Milktea';
+                        fetchProducts();
+                      });
+                    },
                   ),
                   CategoryChip(
                     label: 'Fruitea',
                     isSelected: selectedCategory == 'Fruitea',
-                    onSelected: () =>
-                        setState(() => selectedCategory = 'Fruitea'),
+                    onSelected: () {
+                      setState(() {
+                        selectedCategory = 'Fruitea';
+                        fetchProducts();
+                      });
+                    },
                   ),
                   CategoryChip(
                     label: 'Frappe',
                     isSelected: selectedCategory == 'Frappe',
-                    onSelected: () => setState(() => selectedCategory = 'Frappe'),
+                    onSelected: () {
+                      setState(() {
+                        selectedCategory = 'Frappe';
+                        fetchProducts();
+                      });
+                    },
                   ),
                 ],
               ),
@@ -122,108 +154,100 @@ class _HomePageState extends State<HomePage1> {
           SizedBox(height: screenWidth * 0.025),
           // Products Section
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: selectedCategory == 'All'
-                  ? FirebaseFirestore.instance.collection('products').snapshots()
-                  : FirebaseFirestore.instance
-                  .collection('products')
-                  .where('category', isEqualTo: selectedCategory)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(child: Text('No products found'));
-                }
+            child: products.isEmpty
+                ? Center(child: Text("No products available", style: TextStyle(fontSize: 16, color: Colors.black)))
+                : GridView.builder(
+              padding: EdgeInsets.all(screenWidth * 0.025),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: screenWidth * 0.025,
+                mainAxisSpacing: screenWidth * 0.025,
+                childAspectRatio: 0.7,
+              ),
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                final product = products[index];
+                final product_name = product['product_name'];
+                final product_description = product['product_description'];
+                final imageUrl = product['imageUrl'];
+                final double price = product['price'];
 
-                final products = snapshot.data!.docs;
-
-                return GridView.builder(
-                  padding: EdgeInsets.all(screenWidth * 0.025),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: screenWidth * 0.025,
-                    mainAxisSpacing: screenWidth * 0.025,
-                    childAspectRatio: 0.7,
-                  ),
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    final product = products[index];
-                    final category = product['category'];
-                    final description = product['description'];
-                    final imageUrl = product['imageUrl'];
-                    final double price = product['price'];
-
-                    return Expanded(
-                      child: Card(
-                        color: Colors.white,  // Dark white card color
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),  // Rounded corners
-                        ),
-                        elevation: 3,  // Optional shadow for a more elevated look
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    topRight: Radius.circular(10),
-                                  ),
-                                  child: Image.network(
-                                    imageUrl,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    category,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: Colors.black,  // White text for contrast
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Row(
-                                    children: List.generate(5, (index) {
-                                      return Icon(
-                                        Icons.star,
-                                        color: index < 5 ? Colors.orange : Colors.grey,  // 3 stars in orange, rest grey
-                                        size: 14,
-                                      );
-                                    }),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    '₱${price.toStringAsFixed(2)}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: Colors.black,  // White text for contrast
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductPage(
+                          imageUrl: imageUrl,
+                          productName: product_name,
+                          price: price,
+                          product_description: product_description,
                         ),
                       ),
                     );
-
                   },
+                  child: Card(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    elevation: 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
+                              child: Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product_name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Row(
+                                children: List.generate(5, (index) {
+                                  return Icon(
+                                    Icons.star,
+                                    color: index < 5 ? Colors.orange : Colors.grey,
+                                    size: 14,
+                                  );
+                                }),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                '₱${price.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
@@ -233,7 +257,6 @@ class _HomePageState extends State<HomePage1> {
     );
   }
 }
-
 
 class CategoryChip extends StatelessWidget {
   final String label;
