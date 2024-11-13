@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import 'package:thirst_tea/sign_up/sign_up_page.dart';
-// import 'package:thirst_tea/home/home_page.dart';
-import 'package:thirst_tea/bottom_tabs/bottom_tabs_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
+import 'package:thirst_tea/home/home_page.dart';
 
 class SignInPage extends StatefulWidget {
 
@@ -44,7 +41,7 @@ class _SignInPageState extends State<SignInPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(), // Navigate to HomePage
+                builder: (context) => HomePage1(), // Navigate to HomePage
               ),
             );
           } else {
