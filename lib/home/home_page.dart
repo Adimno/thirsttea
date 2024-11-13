@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage1> {
                   children: [
                     Expanded(
                       child: Image.asset(
-                        'assets/images/target_logo1.jpg', // Your logo
+                        'assets/images/thirstea_logo.jpg', // Your logo
                         fit: BoxFit.contain,
                       ),
                     ),
