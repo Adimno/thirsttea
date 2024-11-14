@@ -97,7 +97,7 @@ class _ProductPageState extends State<ProductPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CartPage()),
+                MaterialPageRoute(builder: (context) => CartPage(email: widget.email)),
               );
             },
           ),
@@ -169,6 +169,7 @@ class _ProductPageState extends State<ProductPage> {
                     );
                   } else {
                     CartPage.cartItems.add({
+                      email: widget.email,
                       'productName': widget.productName,
                       'imageUrl': widget.imageUrl,
                       'price': widget.price,

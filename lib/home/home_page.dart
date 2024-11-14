@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage1> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CartPage()),
+                MaterialPageRoute(builder: (context) => CartPage(email: widget.email)),
               );
             },
           ),
