@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thirst_tea/cart/cart_page.dart';
 
 class ProductPage extends StatelessWidget {
   final String? imageUrl;
@@ -21,24 +22,33 @@ class ProductPage extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
+        title: Text(
+          'Product Details',
+          style: TextStyle(color: Colors.black),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.shopping_cart, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CartPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center, // Align all to the left
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Product Details', // Text at the top of the image
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 8),
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
                 imageUrl ?? 'https://via.placeholder.com/250',
                 height: 350,
-                width: 350,
+                width: double.infinity,
                 fit: BoxFit.cover,
               ),
             ),
@@ -46,25 +56,41 @@ class ProductPage extends StatelessWidget {
             Text(
               productName ?? 'Unnamed Product',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
-              textAlign: TextAlign.left,
             ),
             SizedBox(height: 8),
             Text(
               '₱${(price ?? 0.0).toStringAsFixed(2)}',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.left,
             ),
             SizedBox(height: 16),
             Text(
               product_description ?? 'No description available',
               style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.left,
             ),
             SizedBox(height: 24),
-            Center( // Center the button horizontally
+            Center(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  // Add your navigation or functionality here
+                  // Check if the product is already in the cart
+                  bool productExists = CartPage.cartItems.any((item) => item['productName'] == productName);
+
+                  if (productExists) {
+                    // If product is already in cart, show a message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('This product is already in the cart')),
+                    );
+                  } else {
+                    // Add product to cart if it's not in the cart yet
+                    CartPage.cartItems.add({
+                      'productName': productName,
+                      'imageUrl': imageUrl,
+                      'price': price,
+                      'quantity': 1, // Default quantity is 1
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Product added to cart')),
+                    );
+                  }
                 },
                 icon: Icon(Icons.shopping_cart, color: Colors.white),
                 label: Text(

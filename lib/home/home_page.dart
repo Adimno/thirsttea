@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:thirst_tea/product_page/product_page.dart';
 import 'package:thirst_tea/sign_in/sign_in_page.dart'; // Import the SignInPage for logout navigation
-
+import 'package:thirst_tea/cart/cart_page.dart';
 class HomePage1 extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -74,6 +74,17 @@ class _HomePageState extends State<HomePage1> {
             },
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.shopping_cart, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CartPage()),
+              );
+            },
+          ),
+        ],
       ),
       drawer: Drawer(
         child: Container(
