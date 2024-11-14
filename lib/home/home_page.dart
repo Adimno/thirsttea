@@ -24,8 +24,7 @@ class _HomePageState extends State<HomePage1> {
         'http://10.0.2.2/thirsteaFINALV2/login/adminmain/products_cp_connection.php'; // Replace with your server address
 
     try {
-      final response = await http.get(Uri.parse(url +
-          '?category=$selectedCategory')); // Pass category as a query parameter
+      final response = await http.get(Uri.parse(url + '?category=$selectedCategory')); // Pass category as a query parameter
       if (response.statusCode == 200) {
         final List<dynamic> productsList =
         json.decode(response.body); // Decode the JSON response
@@ -272,6 +271,7 @@ class _HomePageState extends State<HomePage1> {
                   final product_description = product['product_description'];
                   final imageUrl = product['imageUrl'];
                   final double price = product['price'];
+                  final productId = product['product_id'];
 
                   return GestureDetector(
                     onTap: () {
@@ -282,7 +282,8 @@ class _HomePageState extends State<HomePage1> {
                             imageUrl: imageUrl,
                             productName: product_name,
                             price: price,
-                            product_description: product_description,
+                            productDescription: product_description,
+                            productId: productId,
                           ),
                         ),
                       );

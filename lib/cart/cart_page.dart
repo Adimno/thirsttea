@@ -37,9 +37,23 @@ class _CartPageState extends State<CartPage> {
     for (var item in CartPage.cartItems) {
       double price = item['price'] ?? 0.0;
       int quantity = item['quantity'] ?? 0;
-      subtotal += price * quantity;  // Total per item = price * quantity
+      double sizeCost = getSizeCost(item['size']);  // Add size-specific cost
+      subtotal += (price + sizeCost) * quantity;  // Total per item = price * quantity + size cost
     }
     return subtotal;
+  }
+
+  // Method to get size cost
+  double getSizeCost(String? size) {
+    if (size == null) return 0.0;
+    switch (size.toLowerCase()) {
+      case 'medium':
+        return 20.0;  // Additional 20 for medium size
+      case 'large':
+        return 50.0;  // Additional 50 for large size
+      default:
+        return 0.0;  // No additional cost for other sizes
+    }
   }
 
   // Method to calculate total (includes shipping)
@@ -53,7 +67,6 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     double subtotal = getSubtotal();
     double total = getTotal();
-
 
     return Scaffold(
       appBar: AppBar(
@@ -76,7 +89,8 @@ class _CartPageState extends State<CartPage> {
                   final item = CartPage.cartItems[index];
                   final price = item['price'] ?? 0.0;
                   final quantity = item['quantity'] ?? 0;
-                  final productTotal = price * quantity;  // Total for this product
+                  final size = item['size'] ?? 'Not selected';
+                  final productTotal = (price + getSizeCost(size)) * quantity;  // Include size cost in total
 
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -98,6 +112,9 @@ class _CartPageState extends State<CartPage> {
                                 SizedBox(height: 4),
                                 Text('₱${price.toStringAsFixed(2)}', style: TextStyle(color: Colors.grey)),
                                 Text(item['description'] ?? '', style: TextStyle(color: Colors.grey)),
+                                // Display the selected size here
+                                SizedBox(height: 4),
+                                Text('Size: $size', style: TextStyle(color: Colors.grey)),
                               ],
                             ),
                           ),
