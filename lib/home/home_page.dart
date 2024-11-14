@@ -5,11 +5,16 @@ import 'package:thirst_tea/product_page/product_page.dart';
 import 'package:thirst_tea/sign_in/sign_in_page.dart'; // Import the SignInPage for logout navigation
 import 'package:thirst_tea/cart/cart_page.dart';
 class HomePage1 extends StatefulWidget {
+  final String email; // Add email parameter to the constructor
+
+  HomePage1({required this.email});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage1> {
+  late String email;
   String selectedCategory = 'All';
   List products = [];
 
@@ -17,6 +22,8 @@ class _HomePageState extends State<HomePage1> {
   void initState() {
     super.initState();
     fetchProducts();
+    email = widget.email;
+
   }
 
   Future<void> fetchProducts() async {
@@ -46,6 +53,7 @@ class _HomePageState extends State<HomePage1> {
 
   @override
   Widget build(BuildContext context) {
+    print('Logged in as: $email'); // Debugging email
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -61,7 +69,7 @@ class _HomePageState extends State<HomePage1> {
         ),
         title: Center(
           child: Text(
-            'ThirstTea',
+            'ThirsTea',
             style: TextStyle(fontSize: screenWidth * 0.06),
           ),
         ),
@@ -267,11 +275,13 @@ class _HomePageState extends State<HomePage1> {
                 itemCount: products.length,
                 itemBuilder: (context, index) {
                   final product = products[index];
+
                   final product_name = product['product_name'];
                   final product_description = product['product_description'];
                   final imageUrl = product['imageUrl'];
                   final double price = product['price'];
                   final productId = product['product_id'];
+
 
                   return GestureDetector(
                     onTap: () {
@@ -280,6 +290,7 @@ class _HomePageState extends State<HomePage1> {
                         MaterialPageRoute(
                           builder: (context) => ProductPage(
                             imageUrl: imageUrl,
+                            email: widget.email, // Pass email from HomePage1
                             productName: product_name,
                             price: price,
                             productDescription: product_description,

@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 class ProductPage extends StatefulWidget {
+  final String email; // Add email parameter to the constructor
   final String imageUrl;
   final String productName;
   final double price;
@@ -14,6 +15,7 @@ class ProductPage extends StatefulWidget {
   // Constructor for ProductPage
   const ProductPage({
     Key? key,
+    required this.email,
     required this.imageUrl,
     required this.productName,
     required this.price,
@@ -27,6 +29,14 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  late String email;
+  @override
+  void initState() {
+    super.initState();
+    email = widget.email;
+
+  }
+
   String? selectedSize;
 
   // Add the addToCart function here...
@@ -38,13 +48,14 @@ class _ProductPageState extends State<ProductPage> {
     required String description,
     required String productName,
     required double price,
-    required String userEmail,
+    required String email,
   }) async {
     var url = Uri.parse('http://10.0.2.2/thirsteaFINALV2/login/usermain/add_to_cart_cp.php');
     double orderAmount = orderQuantity * price;
 
+    // Correctly include 'email' as part of the request body
     Map<String, String> data = {
-      'email': userEmail,
+      'email': widget.email, // Email passed correctly
       'product_id': productId,
       'size': size,
       'order_quantity': orderQuantity.toString(),
@@ -173,7 +184,7 @@ class _ProductPageState extends State<ProductPage> {
                       description: widget.productDescription,
                       productName: widget.productName,
                       price: widget.price,
-                      userEmail: 'user@example.com',
+                      email: widget.email,
                     );
                   }
                 },

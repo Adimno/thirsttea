@@ -41,7 +41,7 @@ class _SignInPageState extends State<SignInPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage1(), // Navigate to HomePage
+                builder: (context) => HomePage1(email: _emailController.text.trim()), // Navigate to HomePage
               ),
             );
           } else {
