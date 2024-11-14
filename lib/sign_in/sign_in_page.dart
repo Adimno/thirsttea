@@ -23,7 +23,7 @@ class _SignInPageState extends State<SignInPage> {
       try {
         // Send login data to your PHP server
         var response = await http.post(
-          Uri.parse('http://10.0.2.2/thirsteaFINALV2/login/validation.php'), // Your PHP server URL
+          Uri.parse('http://10.0.2.2/thirsteaFINALV2/login/validation_cp.php'), // Your PHP server URL
           body: {
             'email': _emailController.text.trim(),
             'password': _passwordController.text.trim(),

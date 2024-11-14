@@ -87,12 +87,12 @@ class _HomePageState extends State<HomePage1> {
                 ),
                 child: Column(
                   children: [
-                    Expanded(
-                      child: Image.asset(
-                        'assets/images/thirstea_logo.jpg', // Your logo
-                        fit: BoxFit.contain,
-                      ),
-                    ),
+                    // Expanded(
+                    //   child: Image.asset(
+                    //     'https://via.placeholder.com/25', // Your logo
+                    //     fit: BoxFit.contain,
+                    //   ),
+                    // ),
                     SizedBox(height: 20),
                   ],
                 ),
