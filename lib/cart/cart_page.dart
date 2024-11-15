@@ -177,9 +177,9 @@ class _CartPageState extends State<CartPage> {
     if (size == null) return 0.0;
     switch (size.toLowerCase()) {
       case 'medium':
-        return 20.0;  // Additional 20 for medium size
+        return 10.0;  // Additional 20 for medium size
       case 'large':
-        return 50.0;  // Additional 50 for large size
+        return 20.0;  // Additional 50 for large size
       default:
         return 0.0;  // No additional cost for other sizes
     }

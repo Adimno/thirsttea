@@ -48,15 +48,29 @@ class PaymentPage extends StatelessWidget {
     // Collect data from the page
     final selectedPaymentMethod = 'COD'; // Replace with actual selected payment method
 
-    // Send HTTP POST request to server
+    // Calculate the total amount and subtotal by multiplying order_amount with order_quantity for each item
+    double calculatedTotalAmount = 0.0;
+    double calculatedSubtotal = 0.0;
+
+    // Loop through each cart item and calculate the total for each item
+    for (var item in CartPage.cartItems) {
+      final price = double.tryParse(item['order_amount'].toString()) ?? 0.0;
+      final quantity = item['order_quantity'] ?? 1;
+      final itemTotal = price * quantity; // Multiply price by quantity to get the total for the item
+
+      calculatedTotalAmount += itemTotal; // Add item total to the grand total
+      calculatedSubtotal += itemTotal;   // Add item total to the subtotal
+    }
+
+    // Send HTTP POST request to the server
     final url = Uri.parse('http://10.0.2.2/thirsteaFINALV2/login/usermain/place_order_cp.php');
     final response = await http.post(url, body: {
       'email': email,
       'payment_method': selectedPaymentMethod,
       'address': address,
       'cart_items': json.encode(CartPage.cartItems), // Convert cart items to JSON string
-      'total_amount': totalAmount.toString(),
-      'subtotal': subtotal.toString(),
+      'total_amount': calculatedTotalAmount.toString(),
+      'subtotal': calculatedSubtotal.toString(),
     });
 
     if (response.statusCode == 200) {
@@ -72,13 +86,11 @@ class PaymentPage extends StatelessWidget {
                 // Close the dialog
                 Navigator.pop(context);
 
-                // Optionally navigate back to a different screen
                 // Navigate to the home page (replace with your home page widget)
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => HomePage1(email: email)), // Replace HomePage() with your actual home page widget
                 );
-
 
                 // Call fetchCartItems to refresh the cart and ensure it's empty after placing the order
                 fetchCartItems();
@@ -108,6 +120,7 @@ class PaymentPage extends StatelessWidget {
       );
     }
   }
+
 
 
 
