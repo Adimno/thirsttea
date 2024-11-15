@@ -118,9 +118,9 @@ class _HomePageState extends State<HomePage1> {
                 ),
               ),
               ListTile(
-                leading: Icon(Icons.home, color: Colors.blueAccent),
+                leading: Icon(Icons.account_circle, color: Colors.brown),
                 title: Text(
-                  'Home',
+                  'Profile',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
                 onTap: () {
@@ -128,9 +128,9 @@ class _HomePageState extends State<HomePage1> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.account_circle, color: Colors.blueAccent),
+                leading: Icon(Icons.home, color: Colors.brown),
                 title: Text(
-                  'Profile',
+                  'Home',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
                 onTap: () {
