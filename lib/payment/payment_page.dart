@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Make sure to import intl for number formatting
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // For encoding data into JSON
 
 class PaymentPage extends StatelessWidget {
   final double totalAmount;
@@ -15,12 +17,72 @@ class PaymentPage extends StatelessWidget {
     required this.cartItems,
   }) : super(key: key);
 
+  Future<void> placeOrder(BuildContext context, String address) async {
+    // Collect data from the page
+    final selectedPaymentMethod = 'COD'; // Replace with actual selected payment method
+
+    // Send HTTP POST request to server
+    final url = Uri.parse('http://10.0.2.2/thirsteaFINALV2/login/usermain/place_order_cp.php');
+    final response = await http.post(url, body: {
+      'email': email,
+      'payment_method': selectedPaymentMethod,
+      'address': address,
+      'cart_items': json.encode(cartItems), // Convert cart items to JSON string
+      'total_amount': totalAmount.toString(),
+      'subtotal': subtotal.toString(),
+    });
+
+    // Print response for debugging
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      // Success, show success message and navigate back
+      print('Order placed successfully');
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Success'),
+          content: Text('Your order has been placed successfully!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context); // Optionally navigate back to a different screen
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // Error handling
+      print('Error placing order: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('There was an error placing your order. Please try again.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    // Format the totalAmount for display
     final currencyFormat = NumberFormat.currency(locale: 'en_PH', symbol: '₱');
     final formattedTotalAmount = currencyFormat.format(totalAmount);
     final formattedSubtotal = currencyFormat.format(subtotal);
+
+    final TextEditingController addressController = TextEditingController(); // Added controller for address
 
     return Scaffold(
       appBar: AppBar(
@@ -31,7 +93,7 @@ class PaymentPage extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: SingleChildScrollView(  // Wrap the body in SingleChildScrollView
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,6 +116,7 @@ class PaymentPage extends StatelessWidget {
             ),
             SizedBox(height: 24),
             TextField(
+              controller: addressController, // Assign the controller here
               decoration: InputDecoration(
                 labelText: 'Address',
                 border: OutlineInputBorder(
@@ -82,11 +145,12 @@ class PaymentPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 24),  // Add spacing between the summary and button
+            SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
-                // Add navigation or other logic for placing an order
-              },
+                // Use the address text entered by the user
+                placeOrder(context, addressController.text);
+              }, // Call placeOrder when button is pressed
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 16.0),
                 backgroundColor: Colors.blue,
@@ -118,14 +182,14 @@ class PaymentOption extends StatefulWidget {
 }
 
 class _PaymentOptionState extends State<PaymentOption> {
-  bool _isSelected = false; // Track if the payment option is selected
+  bool _isSelected = false;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         setState(() {
-          _isSelected = !_isSelected; // Toggle selection state on tap
+          _isSelected = !_isSelected;
         });
       },
       child: Container(
@@ -157,7 +221,6 @@ class _PaymentOptionState extends State<PaymentOption> {
     );
   }
 }
-
 
 class SummaryRow extends StatelessWidget {
   final String label;
