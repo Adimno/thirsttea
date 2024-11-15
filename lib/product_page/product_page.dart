@@ -200,7 +200,7 @@ class _ProductPageState extends State<ProductPage> {
                 ),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 80.0),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Color(0xFF8B5E3C),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),

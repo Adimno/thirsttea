@@ -255,7 +255,7 @@ class _CartPageState extends State<CartPage> {
 
                   return Card(
                     color: Colors.white,
-                    elevation: 4,
+                    elevation: 8,
                     margin: EdgeInsets.symmetric(vertical: 8.0),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0)),
@@ -379,7 +379,7 @@ class _CartPageState extends State<CartPage> {
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 80.0),
-                backgroundColor: Colors.blue,
+                backgroundColor: Color(0xFF8B5E3C),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),

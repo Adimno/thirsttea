@@ -201,7 +201,7 @@ class PaymentPage extends StatelessWidget {
               }, // Call placeOrder when button is pressed
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 16.0),
-                backgroundColor: Colors.blue,
+                backgroundColor: Color(0xFF8B5E3C),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
@@ -257,11 +257,11 @@ class _PaymentOptionState extends State<PaymentOption> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(widget.icon, size: 40, color: _isSelected ? Colors.blue : Colors.grey),
+            Icon(widget.icon, size: 40, color: _isSelected ? Color(0xFF8B5E3C) : Colors.grey),
             SizedBox(height: 8),
             Text(
               widget.text,
-              style: TextStyle(fontSize: 16, color: _isSelected ? Colors.blue : Colors.grey),
+              style: TextStyle(fontSize: 16, color: _isSelected ? Color(0xFF8B5E3C) : Colors.grey),
             ),
           ],
         ),
