@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For encoding data into JSON
+import 'package:thirst_tea/cart/cart_page.dart';
+import 'package:thirst_tea/home/home_page.dart';
 
 class PaymentPage extends StatelessWidget {
   final double totalAmount;
@@ -17,6 +19,31 @@ class PaymentPage extends StatelessWidget {
     required this.cartItems,
   }) : super(key: key);
 
+
+  Future<void> fetchCartItems() async {
+    var url = Uri.parse('http://10.0.2.2/thirsteaFINALV2/login/usermain/fetch_cart_cp.php');
+    Map<String, String> data = {
+      'email': email, // Use the 'email' variable passed to this class
+    };
+
+    try {
+      var response = await http.post(url, body: data);
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+        if (jsonResponse['success']) {
+          // Update the cart items
+          CartPage.cartItems = List<Map<String, dynamic>>.from(jsonResponse['cartItems']);
+        } else {
+          print('Error fetching cart items: ${jsonResponse['message']}');
+        }
+      } else {
+        print('Failed to fetch cart items. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   Future<void> placeOrder(BuildContext context, String address) async {
     // Collect data from the page
     final selectedPaymentMethod = 'COD'; // Replace with actual selected payment method
@@ -27,18 +54,13 @@ class PaymentPage extends StatelessWidget {
       'email': email,
       'payment_method': selectedPaymentMethod,
       'address': address,
-      'cart_items': json.encode(cartItems), // Convert cart items to JSON string
+      'cart_items': json.encode(CartPage.cartItems), // Convert cart items to JSON string
       'total_amount': totalAmount.toString(),
       'subtotal': subtotal.toString(),
     });
 
-    // Print response for debugging
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
     if (response.statusCode == 200) {
       // Success, show success message and navigate back
-      print('Order placed successfully');
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -47,8 +69,19 @@ class PaymentPage extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
-                Navigator.pop(context); // Optionally navigate back to a different screen
+                // Close the dialog
+                Navigator.pop(context);
+
+                // Optionally navigate back to a different screen
+                // Navigate to the home page (replace with your home page widget)
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage1(email: email)), // Replace HomePage() with your actual home page widget
+                );
+
+
+                // Call fetchCartItems to refresh the cart and ensure it's empty after placing the order
+                fetchCartItems();
               },
               child: Text('OK'),
             ),
@@ -57,8 +90,6 @@ class PaymentPage extends StatelessWidget {
       );
     } else {
       // Error handling
-      print('Error placing order: ${response.statusCode}');
-      print('Error message: ${response.body}');
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -66,7 +97,10 @@ class PaymentPage extends StatelessWidget {
           content: Text('There was an error placing your order. Please try again.'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                // Close the dialog
+                Navigator.pop(context);
+              },
               child: Text('OK'),
             ),
           ],
@@ -74,6 +108,7 @@ class PaymentPage extends StatelessWidget {
       );
     }
   }
+
 
 
   @override

@@ -44,22 +44,37 @@ class _CartPageState extends State<CartPage> {
         var jsonResponse = json.decode(response.body);
         if (jsonResponse['success']) {
           setState(() {
-            // Initialize cart items with quantity set to 1 if not present
-            CartPage.cartItems = List<Map<String, dynamic>>.from(jsonResponse['cartItems']).map((item) {
-              if (item['order_quantity'] == null) {
-                item['order_quantity'] = 1; // Set default quantity to 1
-              }
-              return item;
-            }).toList();
+            // Check if cartItems exists and is not empty, otherwise return an empty list
+            var cartItems = jsonResponse['cartItems'];
+            if (cartItems != null && cartItems.isNotEmpty) {
+              CartPage.cartItems = List<Map<String, dynamic>>.from(cartItems).map((item) {
+                if (item['order_quantity'] == null) {
+                  item['order_quantity'] = 1; // Set default quantity to 1
+                }
+                return item;
+              }).toList();
+            } else {
+              // Set cartItems to empty list if no items are found
+              CartPage.cartItems = [];
+            }
           });
         } else {
           print('Error fetching cart items: ${jsonResponse['message']}');
+          setState(() {
+            CartPage.cartItems = []; // Ensure cart is empty if there's an error
+          });
         }
       } else {
         print('Failed to fetch cart items. Status code: ${response.statusCode}');
+        setState(() {
+          CartPage.cartItems = []; // Ensure cart is empty if the request fails
+        });
       }
     } catch (e) {
-      print('Error: $e');
+      print('Error fetching cart items: $e');
+      setState(() {
+        CartPage.cartItems = [];  // Set to empty if an error occurs
+      });
     }
   }
 
