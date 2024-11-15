@@ -63,12 +63,16 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-  Future<void> updateOrderQuantity(int cartItemId, int quantity) async {
+  Future<void> updateOrderQuantity(int cartItemId, int quantity, double price) async {
     var url = Uri.parse('http://10.0.2.2/thirsteaFINALV2/login/usermain/update_cart_cp.php');
+
+    // Calculate the order amount based on quantity and price
+    double orderAmount = quantity * price;
 
     Map<String, String> data = {
       'cart_id': cartItemId.toString(),
       'order_quantity': quantity.toString(),
+      'order_amount': orderAmount.toString(), // Use the calculated order amount
     };
 
     try {
@@ -78,7 +82,7 @@ class _CartPageState extends State<CartPage> {
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(response.body);
         if (jsonResponse['success']) {
-          print('Quantity updated successfully');
+          print('Quantity and order amount updated successfully');
         } else {
           print('Error updating quantity: ${jsonResponse['message']}');
         }
@@ -90,12 +94,13 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-  // Decrease the quantity of a product in the cart
+// Decrease the quantity of a product in the cart
   void _decrementQuantity(int index) {
     setState(() {
       if (CartPage.cartItems[index]['order_quantity'] > 1) {
         CartPage.cartItems[index]['order_quantity']--;
-        updateOrderQuantity(CartPage.cartItems[index]['cart_id'], CartPage.cartItems[index]['order_quantity']);
+        double price = double.tryParse(CartPage.cartItems[index]['order_amount'].toString()) ?? 0.0; // Parse to double
+        updateOrderQuantity(CartPage.cartItems[index]['cart_id'], CartPage.cartItems[index]['order_quantity'], price);
       }
     });
   }
@@ -104,9 +109,11 @@ class _CartPageState extends State<CartPage> {
   void _incrementQuantity(int index) {
     setState(() {
       CartPage.cartItems[index]['order_quantity']++;
-      updateOrderQuantity(CartPage.cartItems[index]['cart_id'], CartPage.cartItems[index]['order_quantity']);
+      double price = double.tryParse(CartPage.cartItems[index]['order_amount'].toString()) ?? 0.0; // Parse to double
+      updateOrderQuantity(CartPage.cartItems[index]['cart_id'], CartPage.cartItems[index]['order_quantity'], price);
     });
   }
+
   // Remove an item from the cart
   Future<void> _removeItem(int index) async {
     var cartItemId = CartPage.cartItems[index]['cart_id'];  // Get the cart item ID
