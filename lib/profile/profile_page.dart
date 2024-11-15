@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:thirst_tea/sign_in/sign_in_page.dart';
 import 'package:thirst_tea/home/home_page.dart';
+import 'package:thirst_tea/orders/order_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final String email;
@@ -153,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     leading: Icon(Icons.history),
                     title: Text('Orders'),
                     onTap: () {
-                      // Add purchase history functionality here
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OrderPage(email: widget.email)));
                     },
                   ),
                 ],
