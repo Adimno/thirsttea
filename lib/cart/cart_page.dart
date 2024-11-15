@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:thirst_tea/payment/payment_page.dart';
 
 class CartPage extends StatefulWidget {
   static List<Map<String, dynamic>> cartItems = [];
   final String email; // Add email parameter to the constructor
+
+
 
   const CartPage({Key? key, required this.email}) : super(key: key);
 
@@ -16,12 +19,16 @@ class _CartPageState extends State<CartPage> {
 
   late String email;
 
+
+
   @override
   void initState() {
     super.initState();
     fetchCartItems(); // Fetch cart items when the page is initialized
     email = widget.email;
   }
+
+
 
   Future<void> fetchCartItems() async {
     var url = Uri.parse('http://10.0.2.2/thirsteaFINALV2/login/usermain/fetch_cart_cp.php');
@@ -157,21 +164,39 @@ class _CartPageState extends State<CartPage> {
   }
 
   // Method to calculate total (includes shipping)
-  double getTotal() {
-    double subtotal = getSubtotal();
+  double getTotal(double orderAmount) {
+    double subtotal = orderAmount; // Use the orderAmount passed as the subtotal
     double shippingFee = 0.0;  // Free shipping
     return subtotal + shippingFee;
   }
 
+  void _navigateToPaymentPage() {
+    // Calculate the total amount from the cart
+    double subtotal = getSubtotal();
+    double totalAmount = getTotal(subtotal);
+
+    // Pass the totalAmount and other required fields to the PaymentPage
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentPage(
+          totalAmount: totalAmount,  // Pass the total amount
+          subtotal: subtotal,        // Pass the subtotal if needed
+          email: widget.email,       // Pass the user's email
+          cartItems: CartPage.cartItems, // Optionally, pass cart items if needed
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     double subtotal = getSubtotal();
-    double total = getTotal();
+    double total = getTotal(subtotal);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('$email', style: TextStyle(color: Colors.black)),
+        title: Text('Cart', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -318,7 +343,7 @@ class _CartPageState extends State<CartPage> {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // Proceed to payment functionality
+                _navigateToPaymentPage();
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 80.0),
@@ -329,7 +354,8 @@ class _CartPageState extends State<CartPage> {
               ),
               child: Text('Proceed to Payment',
                   style: TextStyle(color: Colors.white, fontSize: 20)),
-            ),
+            )
+
           ],
         ),
       ),

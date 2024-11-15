@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 
+
 class ProductPage extends StatefulWidget {
   final String email; // Add email parameter to the constructor
   final String imageUrl;
@@ -71,6 +72,9 @@ class _ProductPageState extends State<ProductPage> {
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(response.body);
         if (jsonResponse['success']) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Item added to the cart!')),
+          );
           print('Item added to the cart');
         } else {
           print('Error adding item to cart: ${jsonResponse['message']}');
