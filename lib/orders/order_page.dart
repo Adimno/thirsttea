@@ -178,7 +178,7 @@ class _OrderPageState extends State<OrderPage> {
                     subtitle: Text(
                       "Size: ${order['size']}\n"
                           "Quantity: ${order['order_quantity']}\n"
-                          "Amount: \$${order['order_amount']}\n"
+                          "Amount: \₱${order['order_amount']}\n"
                           "Status: ${order['order_status']}\n"
                           "Order Date: ${order['order_date']}",
                     ),
