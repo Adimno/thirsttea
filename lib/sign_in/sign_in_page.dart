@@ -16,14 +16,20 @@ class _SignInPageState extends State<SignInPage> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  bool _isLoading = false; // Track loading state
+
   bool _isPasswordVisible = false;
 
   Future<void> _signIn() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true; // Show loading indicator
+      });
+
       try {
         // Send login data to your PHP server
         var response = await http.post(
-          Uri.parse('http://10.0.2.2/thirsteaFINALV2/login/validation_cp.php'), // Your PHP server URL
+          Uri.parse('http://10.0.2.2/thirsteaFINALV2/login/validation_cp.php'),
           body: {
             'email': _emailController.text.trim(),
             'password': _passwordController.text.trim(),
@@ -32,77 +38,44 @@ class _SignInPageState extends State<SignInPage> {
 
         // Check the response status code and handle accordingly
         if (response.statusCode == 200) {
-          // Parse the response from the PHP server
           var responseData = json.decode(response.body);
 
-          // Check if login was successful
           if (responseData['status'] == 'success') {
-            // If the response is successful, navigate to the HomePage
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage1(email: _emailController.text.trim()), // Navigate to HomePage
+                builder: (context) =>
+                    HomePage1(email: _emailController.text.trim()),
               ),
             );
           } else {
-            // Handle invalid credentials from PHP server
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Invalid email or password')),
             );
           }
         } else {
-          // Handle different HTTP status codes
-          switch (response.statusCode) {
-            case 400:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Bad request. Please check your input.')),
-              );
-              break;
-            case 401:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Unauthorized. Please check your credentials.')),
-              );
-              break;
-            case 403:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Forbidden. You do not have permission to access this resource.')),
-              );
-              break;
-            case 404:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Server not found. Please check the URL.')),
-              );
-              break;
-            case 500:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Server error. Please try again later.')),
-              );
-              break;
-            default:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Login failed. Please try again.')),
-              );
-          }
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Login failed. Please try again.')),
+          );
         }
       } catch (e) {
-        // Handle errors for network or other exceptions
         if (e is SocketException) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('No internet connection. Please check your connection.')),
-          );
-        } else if (e is FormatException) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Invalid response format. Please try again later.')),
+            SnackBar(content: Text('No internet connection.')),
           );
         } else {
-          print("Error: $e");
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("An unexpected error occurred. Please try again.")),
+            SnackBar(content: Text('An unexpected error occurred.')),
           );
         }
+      } finally {
+        setState(() {
+          _isLoading = false; // Hide loading indicator
+        });
       }
     }
   }
+
 
 
 
