@@ -239,6 +239,8 @@ class _CartPageState extends State<CartPage> {
                       quantity; // Include size cost in total
 
                   return Card(
+                    color: Colors.white,
+                    elevation: 4,
                     margin: EdgeInsets.symmetric(vertical: 8.0),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0)),
@@ -350,7 +352,15 @@ class _CartPageState extends State<CartPage> {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                _navigateToPaymentPage();
+                // Check if the cart is empty before proceeding to payment
+                if (CartPage.cartItems.isEmpty) {
+                  // Show a message or a snack bar if the cart is empty
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Your cart is empty. Please add items to proceed.')),
+                  );
+                } else {
+                  _navigateToPaymentPage();
+                }
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 80.0),

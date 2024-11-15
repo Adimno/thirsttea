@@ -30,12 +30,8 @@ class PaymentPage extends StatelessWidget {
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text(
-          'Payment',
-          style: TextStyle(color: Colors.black),
-        ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(  // Wrap the body in SingleChildScrollView
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +49,6 @@ class PaymentPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                PaymentOption(icon: Icons.payment, text: 'PayPal'),
                 PaymentOption(icon: Icons.money, text: 'Cash'),
               ],
             ),
@@ -87,7 +82,7 @@ class PaymentPage extends StatelessWidget {
                 ],
               ),
             ),
-            Spacer(),
+            SizedBox(height: 24),  // Add spacing between the summary and button
             ElevatedButton(
               onPressed: () {
                 // Add navigation or other logic for placing an order
@@ -112,42 +107,57 @@ class PaymentPage extends StatelessWidget {
   }
 }
 
-class PaymentOption extends StatelessWidget {
+class PaymentOption extends StatefulWidget {
   final IconData icon;
   final String text;
 
   PaymentOption({required this.icon, required this.text});
 
   @override
+  _PaymentOptionState createState() => _PaymentOptionState();
+}
+
+class _PaymentOptionState extends State<PaymentOption> {
+  bool _isSelected = false; // Track if the payment option is selected
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 120,
-      height: 100,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 40, color: Colors.blue),
-          SizedBox(height: 8),
-          Text(
-            text,
-            style: TextStyle(fontSize: 16, color: Colors.blue),
-          ),
-        ],
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isSelected = !_isSelected; // Toggle selection state on tap
+        });
+      },
+      child: Container(
+        width: 120,
+        height: 100,
+        decoration: BoxDecoration(
+          color: _isSelected ? Colors.blue.withOpacity(0.1) : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(widget.icon, size: 40, color: _isSelected ? Colors.blue : Colors.grey),
+            SizedBox(height: 8),
+            Text(
+              widget.text,
+              style: TextStyle(fontSize: 16, color: _isSelected ? Colors.blue : Colors.grey),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
 
 class SummaryRow extends StatelessWidget {
   final String label;
