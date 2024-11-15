@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:thirst_tea/product_page/product_page.dart';
 import 'package:thirst_tea/sign_in/sign_in_page.dart'; // Import the SignInPage for logout navigation
 import 'package:thirst_tea/cart/cart_page.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
 class HomePage1 extends StatefulWidget {
   final String email; // Add email parameter to the constructor
 
@@ -167,25 +169,42 @@ class _HomePageState extends State<HomePage1> {
               padding: EdgeInsets.all(screenWidth * 0.04),
               child: Container(
                 padding: EdgeInsets.all(screenWidth * 0.04),
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(12),
-                ),
                 child: Row(
                   children: [
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Featured Products',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: screenWidth * 0.05,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
                           SizedBox(height: 4),
+                          CarouselSlider(
+                            options: CarouselOptions(
+                              height: 150, // Adjusted height for better visibility
+                              autoPlay: true, // Enable auto-play
+                              enlargeCenterPage: false, // Disable enlarging center image for uniform fit
+                              aspectRatio: 16 / 9, // Maintain aspect ratio for wide images
+                              viewportFraction: 1.0, // Each image occupies the full width of the screen
+                            ),
+                            items: [
+                              'assets/firstImage.jpg', // Image 1
+                              'assets/secondImage.jpg', // Image 2
+                            ].map((imagePath) {
+                              return Builder(
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 5),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0), // Rounded corners
+                                      child: Image.asset(
+                                        imagePath,
+                                        fit: BoxFit.cover, // Ensures the image covers the box
+                                        width: double.infinity, // Occupies full width
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          ),
                         ],
                       ),
                     ),
