@@ -74,6 +74,7 @@ flutter:
   assets:
     - assets/firstImage.jpg
     - assets/secondImage.jpg
+    - assets/thirstea_logo.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

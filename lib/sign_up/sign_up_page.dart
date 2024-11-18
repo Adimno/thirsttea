@@ -108,10 +108,11 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     Column(
                       children: [
-                        Icon(
-                          Icons.local_cafe, // Custom icon
-                          size: 60,
-                          color: Color(0xFF8B5E3C),
+                        Image.asset(
+                          'assets/thirstea_logo.png', // Replace with your image path
+                          width: 100,  // Set the width of the box
+                          height: 100, // Set the height of the box
+                          fit: BoxFit.cover, // Ensures the image covers the entire box
                         ),
                         SizedBox(height: 10),
                         Text(
