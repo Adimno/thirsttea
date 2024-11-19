@@ -111,6 +111,7 @@ class _OrderPageState extends State<OrderPage> {
             },
           ),
         ),
+        title: const Text('Orders'),
       ),
       drawer: Drawer(
         child: ListView(
