@@ -364,7 +364,7 @@ class _HomePageState extends State<HomePage1> {
                         children: [
                           Expanded(
                             child: AspectRatio(
-                              aspectRatio: 1,
+                              aspectRatio: 2,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(10),
