@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:thirst_tea/profile/profile_page.dart';
 import 'package:thirst_tea/home/home_page.dart';
 import 'package:thirst_tea/sign_in/sign_in_page.dart';
+import 'package:thirst_tea/home/home_page.dart';
+import 'package:thirst_tea/developers/developers_page.dart';
 
 class EditProfilePage extends StatefulWidget {
   final String email;
@@ -148,7 +150,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               onTap: () {
-                Navigator.pop(context); // Close the drawer
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => DeveloperPage(email: widget.email)),
+                );
               },
             ),
           ],
