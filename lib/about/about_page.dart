@@ -152,7 +152,8 @@ class AboutPage extends StatelessWidget {
               Text(
                 'The Thirstea was designed to satisfy the cravings of milk tea lovers. With Thirstea, customers can explore their favorite drinks and place orders directly through their mobile devices. '
                     'The application includes features like an easy-to-use menu, and convenient order history to track your orders.\n\n'
-                    'Additionally, Thirstea offers an e-commerce store that sells exclusive merchandise and milk tea ingredients, so you can enjoy your favorite drinks anytime!',
+                    'Additionally, Thirstea offers an e-commerce store that sells exclusive merchandise and milk tea ingredients, so you can enjoy your favorite drinks anytime!\n\n'
+                   'ThirsTeaOfficial@gmail.com',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.black87,
