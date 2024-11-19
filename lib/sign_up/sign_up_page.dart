@@ -274,7 +274,7 @@ class _SignUpPageState extends State<SignUpPage> {
       obscureText: !isVisible,
       validator: (value) => value == null || value.isEmpty
           ? 'Please enter $labelText'
-          : value.length < 6
+          : value.length < 8
           ? 'Password must be at least 6 characters long'
           : null,
     );

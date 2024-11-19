@@ -224,7 +224,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 decoration: InputDecoration(labelText: 'Password'),
                 obscureText: true,
                 validator: (value) =>
-                value!.length < 6 ? "Password must be at least 6 characters" : null,
+                value!.length < 8 ? "Password must be at least 8 characters" : null,
               ),
               TextFormField(
                 controller: confirmPasswordController,
