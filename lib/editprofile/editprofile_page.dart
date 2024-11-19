@@ -149,7 +149,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
               TextFormField(
                 controller: emailController,
                 decoration: InputDecoration(labelText: 'Email'),
-                readOnly: true,
+                validator: (value) =>
+                value!.isEmpty ? "Please enter your email" : null,
               ),
               TextFormField(
                 controller: nameController,
@@ -179,8 +180,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  backgroundColor: Color(0xFF8B5E3C),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  minimumSize: Size(double.infinity, 50),
+                ),
                 onPressed: _updateUserProfile,
-                child: Text("Update Profile"),
+                child: Text("Update Profile",
+                  style: TextStyle(color: Colors.white, fontSize: 20)),
               ),
             ],
           ),
