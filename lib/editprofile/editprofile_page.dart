@@ -120,6 +120,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 );
               },
             ),
+            Divider(),
             ListTile(
               leading: Icon(Icons.home, color: Colors.brown),
               title: Text('Home', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
@@ -131,10 +132,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.logout, color: Colors.redAccent),
-              title: Text('Logout', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.redAccent)),
+              leading: Icon(Icons.help, color: Colors.brown),
+              title: Text(
+                'About Us',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
               onTap: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignInPage()));
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.code, color: Colors.brown),
+              title: Text(
+                'Developers',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
               },
             ),
           ],

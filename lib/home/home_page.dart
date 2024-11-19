@@ -131,6 +131,7 @@ class _HomePageState extends State<HomePage1> {
                   );
                 },
               ),
+              Divider(),
               ListTile(
                 leading: Icon(Icons.home, color: Colors.brown),
                 title: Text(
@@ -142,16 +143,23 @@ class _HomePageState extends State<HomePage1> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.logout, color: Colors.redAccent),
+                leading: Icon(Icons.help, color: Colors.brown),
                 title: Text(
-                  'Logout',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.redAccent),
+                  'About Us',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
                 onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignInPage()), // Navigate to SignInPage
-                  );
+                  Navigator.pop(context); // Close the drawer
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.code, color: Colors.brown),
+                title: Text(
+                  'Developers',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                ),
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
                 },
               ),
             ],
