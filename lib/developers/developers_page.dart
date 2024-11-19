@@ -38,79 +38,92 @@ class DeveloperPage extends StatelessWidget {
         ),
       ),
       drawer: Drawer(
-        child: Container(
-          color: Colors.white,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent,
-                ),
-                child: Column(
-                  children: [
-                    // Expanded(
-                    //   child: Image.asset(
-                    //     'https://via.placeholder.com/25', // Your logo
-                    //     fit: BoxFit.contain,
-                    //   ),
-                    // ),
-                    SizedBox(height: 20),
-                  ],
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFDAB68C), Color(0xFFF5E6D8)], // Milk tea-themed colors
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
-              ListTile(
-                leading: Icon(Icons.account_circle, color: Colors.brown),
-                title: Text(
-                  'Profile',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                ),
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProfilePage(email: email)), // Navigate to SignInPage
-                  );
-                },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 35, // Reduced radius to prevent overflow
+                    backgroundImage: AssetImage('assets/thirstea_logo.png'), // Replace with your logo path
+                    backgroundColor: Colors.transparent,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'ThirsTea Shop',
+                    style: TextStyle(
+                      fontSize: 20, // Reduced font size
+                      fontWeight: FontWeight.bold,
+                      color: Colors.brown, // Milk tea theme
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Your favorite milk tea destination!',
+                    style: TextStyle(
+                      fontSize: 14, // Reduced font size for tagline
+                      color: Colors.brown[300], // Softer shade for tagline
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
-              Divider(),
-              ListTile(
-                leading: Icon(Icons.home, color: Colors.brown),
-                title: Text(
-                  'Home',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                ),
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage1(email: email)),
-                  );
-                },
+            ),
+            ListTile(
+              leading: Icon(Icons.account_circle, color: Colors.brown),
+              title: Text('Profile', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage(email: email)),
+                );
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.home, color: Colors.brown),
+              title: Text('Home', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage1(email: email)),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.help, color: Colors.brown),
+              title: Text(
+                'About Us',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
-              ListTile(
-                leading: Icon(Icons.help, color: Colors.brown),
-                title: Text(
-                  'About Us',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                ),
-                onTap: () {
-                  Navigator.pop(context); // Close the drawer
-                },
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.code, color: Colors.brown),
+              title: Text(
+                'Developers',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
-              ListTile(
-                leading: Icon(Icons.code, color: Colors.brown),
-                title: Text(
-                  'Developers',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                ),
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => DeveloperPage(email: email,)), // Navigate to SignInPage
-                  );
-                },
-              ),
-            ],
-          ),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => DeveloperPage(email: email)),
+                );
+              },
+            ),
+          ],
         ),
       ),
       body: Stack(

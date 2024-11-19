@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:thirst_tea/home/home_page.dart';
 import 'package:thirst_tea/sign_in/sign_in_page.dart';
 import 'package:thirst_tea/profile/profile_page.dart';
+import 'package:thirst_tea/developers/developers_page.dart';
 
 class OrderPage extends StatefulWidget {
   final String email;
@@ -118,8 +119,42 @@ class _OrderPageState extends State<OrderPage> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blueAccent),
-              child: Column(children: [SizedBox(height: 20)]),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFDAB68C), Color(0xFFF5E6D8)], // Milk tea-themed colors
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 35, // Reduced radius to prevent overflow
+                    backgroundImage: AssetImage('assets/thirstea_logo.png'), // Replace with your logo path
+                    backgroundColor: Colors.transparent,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'ThirsTea Shop',
+                    style: TextStyle(
+                      fontSize: 20, // Reduced font size
+                      fontWeight: FontWeight.bold,
+                      color: Colors.brown, // Milk tea theme
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Your favorite milk tea destination!',
+                    style: TextStyle(
+                      fontSize: 14, // Reduced font size for tagline
+                      color: Colors.brown[300], // Softer shade for tagline
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
             ListTile(
               leading: Icon(Icons.account_circle, color: Colors.brown),
@@ -159,7 +194,10 @@ class _OrderPageState extends State<OrderPage> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               onTap: () {
-                Navigator.pop(context); // Close the drawer
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => DeveloperPage(email: widget.email)),
+                );
               },
             ),
           ],
