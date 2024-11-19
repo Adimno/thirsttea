@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:thirst_tea/profile/profile_page.dart';
 import 'package:thirst_tea/home/home_page.dart';
-import 'package:thirst_tea/about/about_page.dart';
+import 'package:thirst_tea/developers/developers_page.dart';
+import 'package:thirst_tea/profile/profile_page.dart';
 
-class DeveloperPage extends StatelessWidget {
+class AboutPage extends StatelessWidget {
   final String email;
 
-
-  const DeveloperPage({Key? key,required this.email}) : super(key: key);
-
-
+  const AboutPage({Key? key,required this.email}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +23,9 @@ class DeveloperPage extends StatelessWidget {
           ),
         ),
         title: Text(
-            'Developers',
-            style: TextStyle(fontSize: screenWidth * 0.06),
-          ),
+          'About Us',
+          style: TextStyle(fontSize: screenWidth * 0.06),
+        ),
         leading: Builder(
           builder: (context) => IconButton(  // Wrap the IconButton with Builder
             icon: Icon(Icons.menu),
@@ -108,10 +105,7 @@ class DeveloperPage extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => AboutPage(email: email)),
-                );
+                Navigator.pop(context); // Close the drawer
               },
             ),
             ListTile(
@@ -130,109 +124,43 @@ class DeveloperPage extends StatelessWidget {
           ],
         ),
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFFFDEBDF), Color(0xFFF5E6D8)], // Soft gradient
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-          ),
-          ListView(
-            padding: EdgeInsets.all(20.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildDeveloperCard(
-                'Gwen Aldrey Santos',
-                'assets/gwen_image.jpeg',
-                '09307259609',
-                'sdsd',
+              // Logo section
+              CircleAvatar(
+                radius: 60, // Adjust radius for the logo size
+                backgroundImage: AssetImage('assets/thirstea_logo.png'), // Replace with your logo path
+                backgroundColor: Colors.transparent,
               ),
               SizedBox(height: 20),
-              _buildDeveloperCard(
-                'Lovely Candelario',
-                'assets/lovely_image.jpeg',
-                '09629050755',
-                ' ',
+              // Title section
+              Text(
+                'Thirstea Shop',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.brown,
+                ),
+                textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),
-              _buildDeveloperCard(
-                'Franz Andrei Carlos',
-                'assets/franz_image.jpeg',
-                '09451690537',
-                '',
-              ),
-              SizedBox(height: 20),
-              _buildDeveloperCard(
-                'Regel Peller',
-                'assets/regel_image.jpge',
-                '09451690537',
-                '',
+              // Description section
+              Text(
+                'The Thirstea was designed to satisfy the cravings of milk tea lovers. With Thirstea, customers can explore their favorite drinks and place orders directly through their mobile devices. '
+                    'The application includes features like an easy-to-use menu, and convenient order history to track your orders.\n\n'
+                    'Additionally, Thirstea offers an e-commerce store that sells exclusive merchandise and milk tea ingredients, so you can enjoy your favorite drinks anytime!',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDeveloperCard(
-      String name,
-      String imagePath,
-      String phoneNumber,
-      String email,
-      ) {
-    return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-              colors: [Color(0xFFFFFFFF), Color(0xFFF5F5F5)],
-          ),
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        padding: EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircleAvatar(
-              radius: 60,
-              backgroundImage: AssetImage(imagePath),
-            ),
-            SizedBox(height: 20),
-            Text(
-              name,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Contact: $phoneNumber',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 5),
-            Text(
-              'Email: $email',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            ),
-          ],
         ),
       ),
     );

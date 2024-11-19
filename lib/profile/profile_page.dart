@@ -6,6 +6,7 @@ import 'package:thirst_tea/home/home_page.dart';
 import 'package:thirst_tea/orders/order_page.dart';
 import 'package:thirst_tea/editprofile/editprofile_page.dart';
 import 'package:thirst_tea/developers/developers_page.dart';
+import 'package:thirst_tea/about/about_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final String email;
@@ -136,7 +137,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               onTap: () {
-                Navigator.pop(context); // Close the drawer
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => AboutPage(email: widget.email)),
+                );
               },
             ),
             ListTile(
